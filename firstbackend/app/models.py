@@ -9,7 +9,7 @@ from django.db import models
 # 6. 로그인한 사용자 게시글에는 좋아요 표시 해제할 수 있어야 하며 
 # 게시글에는 좋아요를 누른 사용자 수 표시 요구
 class MajorAdvance(models.Model) :
-    majoradvance = models.CharField(max_length = 4)
+    majoradvance = models.CharField(max_length = 16)
 
 class Major1(models.Model) :
     major = models.CharField(max_length = 16)
