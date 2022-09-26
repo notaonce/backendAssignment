@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 # 1. 게시글 및 댓글에 대한 CRUD
@@ -19,23 +20,27 @@ class Major2(models.Model) :
 
 class Category(models.Model) : 
     category = models.CharField(max_length = 16)
+    code = models.CharField(max_length=16, default=None)
 
 class Post(models.Model) :
     title = models.CharField(max_length = 100)
     content = models.TextField()
     category = models.ManyToManyField('Category', related_name = 'posts')
+    user = models.ManyToManyField(User, related_name='posts')
+    
     def __str__(self):
         return self.title
 
-class User(models.Model) :
-    userid = models.CharField(max_length=16)
-    password = models.CharField(max_length=16)
+class UserData(models.Model) :
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=16)
     majoradvance = models.ForeignKey(
         MajorAdvance, on_delete=models.CASCADE, related_name='users'
     )
     major1 = models.ManyToManyField('Major1', related_name = 'users')
     major2 = models.ManyToManyField('Major2', related_name = 'users')
+    def __str__(self):
+        return self.name
 
 class Comment(models.Model) :
     post = models.ForeignKey(
@@ -46,10 +51,11 @@ class Comment(models.Model) :
         User, on_delete=models.CASCADE, related_name='comments'
     )
     def __str__(self):
-        return self.title
+        return self.comment
 
 class Like(models.Model) :
     post = models.ForeignKey(
         Post, on_delete=models.CASCADE, related_name = 'likes'
     )
+    user = models.OneToOneField(User, related_name='like', on_delete=models.CASCADE, default=None)
     count = models.IntegerField(default = 0)
